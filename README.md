@@ -1,4 +1,4 @@
-# 🛡️ LogSentinel.AI
+# 🛡️ DHLog.AI
 
 > **"The Virtual L3 Support Engineer That Never Sleeps."**
 
@@ -11,14 +11,14 @@
 
 ## � System Architecture
 
-![LogSentinel Architecture](assets/log_sentinel_architecture.png)
+![DHLog Architecture](assets/dhlog_architecture.png)
 
 ---
 
 ## 🚀 The AIOps Revolution
 
 Traditional monitoring tools (Seq, Kibana) only show **what** happened.
-**LogSentinel.AI** explains **why** it happened and **how** to fix it.
+**DHLog.AI** explains **why** it happened and **how** to fix it.
 
 It is an intelligent background agent that:
 
@@ -59,12 +59,12 @@ We follow a strict **Hexagonal Architecture (Ports & Adapters)** to decouple the
 
 ## 🎨 Visualizing the Flow
 
-![LogSentinel Workflow](assets/log_sentinel_workflow.png)
+![DHLog Workflow](assets/dhlog_workflow.png)
 
 ```mermaid
 sequenceDiagram
     participant App as Application
-    participant Watcher as LogSentinel (Input Port)
+    participant Watcher as DHLog (Input Port)
     participant Core as Orchestrator (Domain)
     participant AI as Semantic Kernel (LLM)
     participant Alert as Discord (Output Port)
@@ -107,7 +107,7 @@ You can switch between AI providers instantly by changing `appsettings.json`.
 
 ### **Option 2: Privacy Mode (Ollama)**
 
-Data privacy is paramount. LogSentinel supports **Local LLMs** out of the box.
+Data privacy is paramount. DHLog supports **Local LLMs** out of the box.
 By changing one setting, your logs **never leave your infrastructure**.
 
 ```json
@@ -122,10 +122,10 @@ By changing one setting, your logs **never leave your infrastructure**.
 
 ## 🛠️ Getting Started
 
-1.  **Configure**: Edit `src/LogSentinel.Worker/appsettings.json`.
+1.  **Configure**: Edit `src/DHLog.Worker/appsettings.json`.
 2.  **Run**:
     ```bash
-    dotnet run --project src/LogSentinel.Worker
+    dotnet run --project src/DHLog.Worker
     ```
 3.  **Simulate**:
     The worker creates a `app_logs.txt`. Write a line to it:
