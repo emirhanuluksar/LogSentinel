@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0" />
     <PackageReference Include="Microsoft.SemanticKernel" Version="1.38.0" /> <!-- Latest stable approximation -->
     <PackageReference Include="Microsoft.SemanticKernel.Connectors.Google" Version="1.38.0-alpha" />
+    <PackageReference Include="Spectre.Console" Version="0.54.0" />
     <ProjectReference Include="..\LogSentinel.Domain\LogSentinel.Domain.csproj" />
   </ItemGroup>
 

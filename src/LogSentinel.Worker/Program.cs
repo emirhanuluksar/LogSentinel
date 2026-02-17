@@ -5,6 +5,7 @@ using LogSentinel.Infrastructure.Alerting;
 using LogSentinel.Infrastructure.Inputs;
 using LogSentinel.Worker;
 using Microsoft.Extensions.Logging;
+using Spectre.Console;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -13,8 +14,20 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnCh
 builder.Configuration.AddEnvironmentVariables();
 
 
+
+
 // Domain Services
-builder.Services.AddScoped<ILogSentinelOrchestrator, LogSentinelOrchestrator>();
+        builder.Services.AddScoped<ILogSentinelOrchestrator, LogSentinelOrchestrator>();
+
+        // Logging
+        builder.Logging.ClearProviders(); // Clean generic console
+        builder.Services.AddSingleton<ILoggerProvider, LogSentinel.Infrastructure.Services.SpectreConsoleLoggerProvider>();
+
+
+        // Logging
+        builder.Logging.ClearProviders(); // Clean generic console
+        builder.Services.AddSingleton<ILoggerProvider, LogSentinel.Infrastructure.Services.SpectreConsoleLoggerProvider>();
+
 
 // Infrastructure - AI
 builder.Services.AddLogSentinelAI(builder.Configuration);
@@ -48,5 +61,20 @@ builder.Services.AddSingleton<ILogSource>(sp =>
 // Worker Service
 builder.Services.AddHostedService<Worker>();
 
-var host = builder.Build();
-host.Run();
+        // Initialize Console UI
+        AnsiConsole.Clear();
+        AnsiConsole.Write(
+            new FigletText("LogSentinel.AI")
+                .LeftJustified()
+                .Color(Color.Teal));
+        AnsiConsole.MarkupLine("[bold grey]v1.2.0 • AIOps & Root Cause Analysis • Enterprise Edition[/]");
+        AnsiConsole.WriteLine();
+
+        var host = builder.Build();
+        
+        AnsiConsole.MarkupLine("[bold green]✓ AI Core Online (Gemini)[/]");
+        AnsiConsole.MarkupLine("[bold green]✓ Log Stream Active (FileLogWatcher)[/]");
+        AnsiConsole.WriteLine();
+        
+        host.Run();
+

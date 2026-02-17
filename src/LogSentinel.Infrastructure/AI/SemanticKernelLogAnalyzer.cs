@@ -4,6 +4,7 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using System.Text.Json;
 using LogSentinel.Infrastructure.Constants;
+using Spectre.Console;
 
 #pragma warning disable SKEXP0001, SKEXP0010
 
@@ -76,8 +77,17 @@ Stack Trace:
             executionSettings: settings
         );
 
-        var result = await _kernel.InvokeAsync(function, new KernelArguments { ["input"] = userPrompt }, cancellationToken);
-        var jsonResponse = result.GetValue<string>() ?? string.Empty;
+        // Invoke AI with spinner
+        string jsonResponse = string.Empty;
+
+        await AnsiConsole.Status()
+            .Spinner(Spinner.Known.Aesthetic)
+            .StartAsync("[bold cyan]Analyzing Stack Trace (Generative AI)...[/]", async ctx =>
+            {
+                var result = await _kernel.InvokeAsync(function, new KernelArguments { ["input"] = userPrompt }, cancellationToken);
+                jsonResponse = result.GetValue<string>() ?? string.Empty;
+            });
+
 
         // Deserialize and validate the AI response
 
@@ -91,12 +101,29 @@ Stack Trace:
             var doc = JsonDocument.Parse(cleanJson);
             var root = doc.RootElement;
             
-            return new AnalysisResult(
+            var analysisResult = new AnalysisResult(
                 RootCause: root.GetProperty(LogSentinelConstants.AnalysisProperties.RootCause).GetString() ?? LogSentinelConstants.UnknownSource,
                 SuggestedFix: root.GetProperty(LogSentinelConstants.AnalysisProperties.SuggestedFix).GetString() ?? "Check logs manually.",
                 RiskLevel: root.GetProperty(LogSentinelConstants.AnalysisProperties.RiskLevel).GetString() ?? LogSentinelConstants.UnknownSource,
                 IsDebounced: false
             );
+
+            // Visual Report
+            var table = new Table().Border(TableBorder.Rounded).Expand();
+            table.AddColumn(new TableColumn("[bold]Metric[/]").Centered());
+            table.AddColumn(new TableColumn("[bold]AI Analysis Result[/]"));
+
+            table.AddRow("[bold cyan]Root Cause[/]", $"[red]{Markup.Escape(analysisResult.RootCause)}[/]");
+            table.AddRow("[bold cyan]Suggested Fix[/]", $"[yellow]{Markup.Escape(analysisResult.SuggestedFix)}[/]");
+            table.AddRow("[bold cyan]Risk Level[/]", $"[bold magenta]{Markup.Escape(analysisResult.RiskLevel)}[/]");
+
+            AnsiConsole.Write(new Panel(table)
+                .Header("[bold red]🚨 CRITICAL INCIDENT REPORT[/]")
+                .BorderColor(Color.Orange1).Padding(1,1,1,1));
+
+
+            return analysisResult;
+
 
         }
         catch (Exception)
