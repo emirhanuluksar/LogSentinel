@@ -15,11 +15,13 @@
 
 ---
 
-## �🚀 The AIOps Revolution
+## 🚀 The AIOps Revolution
+
 Traditional monitoring tools (Seq, Kibana) only show **what** happened.
 **LogSentinel.AI** explains **why** it happened and **how** to fix it.
 
 It is an intelligent background agent that:
+
 1.  **Watches** your application logs in real-time.
 2.  **Detects** anomalies and critical errors.
 3.  **Analyzes** stack traces using Generative AI (Google Gemini, GPT-4o, or Llama 3).
@@ -34,13 +36,15 @@ It is an intelligent background agent that:
 We follow a strict **Hexagonal Architecture (Ports & Adapters)** to decouple the AI Core from inputs and outputs.
 
 ### **The Core (Domain)**
+
 - **LogAnalysisOrchestrator**: Manages the flow and implements **Debouncing** (deduplication of alerts).
 - **Entities**: `LogEntry`, `AnalysisResult`.
 
 ### **Adapters (Infrastructure)**
+
 - **Inputs**:
   - `FileLogWatcher`: Tails local log files in real-time.
-  - *(Future)* `SeqLogProvider`: Polls Seq API for distributed logs.
+  - _(Future)_ `SeqLogProvider`: Polls Seq API for distributed logs.
 - **AI Backend**:
   - **Microsoft Semantic Kernel**: The orchestration engine.
   - **Google Gemini Adapter**: Powerful and cost-effective analysis (Gemini 1.5 Pro/Flash).
@@ -50,7 +54,6 @@ We follow a strict **Hexagonal Architecture (Ports & Adapters)** to decouple the
 - **Outputs**:
   - `DiscordAlertDispatcher`: Sends beautiful, rich-embed alerts.
   - `EmailAlertDispatcher`: Sends detailed HTML reports to executives.
-
 
 ---
 
@@ -68,7 +71,7 @@ sequenceDiagram
 
     App->>Watcher: Writes Error Log
     Watcher->>Core: Streams LogEntry
-    
+
     activate Core
     Core->>Core: Check Debounce Cache
     alt Is Duplicate?
@@ -79,7 +82,7 @@ sequenceDiagram
         AI->>AI: "Think" (Root Cause + Fix)
         AI-->>Core: AnalysisResult JSON
         deactivate AI
-        
+
         Core->>Alert: SendAlert(Log + Fix)
         Alert-->>User: 🚨 Notification received
     end
@@ -93,15 +96,17 @@ sequenceDiagram
 You can switch between AI providers instantly by changing `appsettings.json`.
 
 ### **Option 1: Google Gemini (Recommended)**
+
 ```json
 "AI": {
   "Provider": "Gemini",
-  "ApiKey": "YOUR_GEMINI_KEY_HERE", 
+  "ApiKey": "YOUR_GEMINI_KEY_HERE",
   "ModelId": "gemini-2.5-flash"
 }
 ```
 
 ### **Option 2: Privacy Mode (Ollama)**
+
 Data privacy is paramount. LogSentinel supports **Local LLMs** out of the box.
 By changing one setting, your logs **never leave your infrastructure**.
 
@@ -114,8 +119,6 @@ By changing one setting, your logs **never leave your infrastructure**.
 ```
 
 ---
-
-
 
 ## 🛠️ Getting Started
 
@@ -133,5 +136,4 @@ By changing one setting, your logs **never leave your infrastructure**.
 
 ---
 
-*Architected with ❤️ by Emirhan Uluksar.*
-
+_Architected with ❤️ by Emirhan Uluksar._
